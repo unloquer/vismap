@@ -155,6 +155,7 @@ app.get('/partials/:name',(req, res) ->
 #Start the app
 ########################
 */
-app.listen(config.app.port,function() { 
+var port = Number(process.env.PORT || config.app.port);
+app.listen(port,function() { 
       console.log("Express server listening on port %d in %s mode", config.app.port, app.settings.env);
 });
