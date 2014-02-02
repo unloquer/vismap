@@ -23,12 +23,13 @@ setTimeout(function() {
 }, 5000);
 */
 var centers = [];
+var poligons= [];
 for (var p=0; p<poligonos.features.length; p++) {
   var geometry = poligonos.features[p].geometry.coordinates;
-  calcCenters(geometry); 
+  calcCenters(geometry, poligonos.features[p]); 
 }
 
-function calcCenters(geometry) {
+function calcCenters(geometry, feature) {
 
   x_neg = false;
   y_neg = false;
@@ -69,19 +70,31 @@ function calcCenters(geometry) {
   if (y_neg) {
     center.y = 0 - center.y;
   }
-  console.log(center);
+  //console.log(center);
   centers.push(center);
+  poligons.push(feature);
 }
+
 var idx = 0;
+var data_overlay = document.getElementById('data_overlay');
+ 
 function getNextCenter(center) {
-  console.log(idx);
+  //console.log(idx);
   map.panTo(new L.LatLng(center.y,center.x), true, 1, 0.5);
+  //data_overlay.innerHTML = poligons[idx].ProcesadoDatosMapeo_BARRIO\/SECTOR;// + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_SUB CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_DESCRIPCIÓN + '<br><br>' +poligons[idx].ProcesadoDatosMapeo_ETIQUETA
+  html = '<div class="data_frame"><p class="barrio">' + poligons[idx].properties['ProcesadoDatosMapeo_BARRIO\/SECTOR'] + "</p>";
+  html = html + '<label>Categoria de Analsis:</label><p class="data_text">' + poligons[idx].properties['ProcesadoDatosMapeo_CATEGORIA DE ANALISIS'] + "</p>";
+  html = html + '<label>Subcategoria de analisis</label><p class="data_text">' + poligons[idx].properties['ProcesadoDatosMapeo_SUB CATEGORIA DE ANALISIS'] + "</p>";
+  html = html + '<label>Descripción</label><p class="data_text">' + poligons[idx].properties['ProcesadoDatosMapeo_DESCRIPCIÓN'] + "</p>";
+  html = html + '<label>Etiqueta</label><p class="data_text">' + poligons[idx].properties.ProcesadoDatosMapeo_ETIQUETA + "</p>";
+  html = html + '</div>';
+  data_overlay.innerHTML = html;
   idx++;
   if (idx < centers.length) {
-    setInterval(getNextCenter, 4000, centers[idx]);
+    setTimeout(function() { getNextCenter(centers[idx])}, 4000);
   } else {
-    clearInterval();
+    clearTimeout();
   }
 }
 
-setInterval(getNextCenter, 4000, centers[idx]);
+setTimeout(function() {getNextCenter(centers[idx])}, 4000);
