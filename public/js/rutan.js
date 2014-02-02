@@ -77,10 +77,17 @@ function calcCenters(geometry, feature) {
 
 var idx = 0;
 var data_overlay = document.getElementById('data_overlay');
- 
+var newLayer = null; 
 function getNextCenter(center) {
   //console.log(idx);
+  if (newLayer) {
+    map.removeLayer(newLayer);
+  }
   map.panTo(new L.LatLng(center.y,center.x), true, 1, 0.5);
+    
+  newLayer = L.geoJson(poligons[idx], {
+    style: { "color": "red", "opacity": 0.65} 
+  }).addTo(map);
   //data_overlay.innerHTML = poligons[idx].ProcesadoDatosMapeo_BARRIO\/SECTOR;// + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_SUB CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_DESCRIPCIÓN + '<br><br>' +poligons[idx].ProcesadoDatosMapeo_ETIQUETA
   html = '<div class="data_frame"><p class="barrio">' + poligons[idx].properties['ProcesadoDatosMapeo_BARRIO\/SECTOR'] + "</p>";
   html = html + '<label>Categoria de Analsis:</label><p class="data_text">' + poligons[idx].properties['ProcesadoDatosMapeo_CATEGORIA DE ANALISIS'] + "</p>";
@@ -94,6 +101,10 @@ function getNextCenter(center) {
     setTimeout(function() { getNextCenter(centers[idx])}, 4000);
   } else {
     clearTimeout();
+    if (newLayer) {
+      map.removeLayer(newLayer);
+    }
+    map.setView([6.264468256001104, -75.569280418072125 ], 16);
   }
 }
 
