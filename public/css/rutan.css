@@ -4,6 +4,29 @@
   float: left;
 }
 
+#controls {
+  opacity: 0.8;
+  background-color: #010101;
+  position: absolute;
+  bottom: 0;
+  width: 75%;
+  z-index:99;
+  height: 100px;
+}
+
+.control_wrapper {
+  margin: 0px auto;
+  width: 300px;
+  margin-top: 15px;
+}
+
+.control {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
 #data_overlay {
   float:right;
   width: 25%;

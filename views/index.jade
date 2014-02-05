@@ -3,11 +3,21 @@ html
    link(rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css")
    link(rel="stylesheet" href="css/rutan.css")
    title Leaflet test
- body
+ body(ng-app="mapeo_social")
   div#data_overlay
   div#map
+  div#controls(ng-controller="ControlsCtrl")
+    div.filter_wrapper
+     select(ng-model="barrio_filter" ng-options="b for b in lista_barrios" ng-change="filter_by_barrio()") 
+    div.control_wrapper
+      img.control(ng-click="rewind_animation()" src="/img/rewind.png")
+      img#play.control(ng-click="toggle_play()" src="/img/play.png")
   script(src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js")
-  script(src="data/puntos.js")
-  script(src="data/poligonos.js")
-  script(src="data/lineas.js")
+  //-script(src="data/puntos.js")
+  //-script(src="data/poligonos.js")
+  //-script(src="data/lineas.js")
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js")
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.js")
+  script(src="data/all_mapeo_social.js")
+  script(src="js/mapeo_social.js")
   script(src="js/rutan.js")

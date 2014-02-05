@@ -11,22 +11,37 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 L.marker([51.5, -0.09]).addTo(map)
     .bindPopup('A pretty CSS3 popup. <br> Easily customizable.')
     .openPopup();
-*/
 
 L.geoJson(lineas).addTo(map); 
 L.geoJson(poligonos).addTo(map); 
 L.geoJson(puntos).addTo(map); 
+*/
 
+var all_layer = L.geoJson(all_data).addTo(map); 
+var filtered_layer = null;
 /*
 setTimeout(function() {
   map.panTo(new L.LatLng(6.261663256300778,-75.565408823978458), true, 1, 0.5);
 }, 5000);
 */
+var barrios = [];
+var by_barrio = {};
 var centers = [];
 var poligons= [];
+var show_objects = by_barrio;
+sortData(all_data);
+//var poligonos = all_data;
+/*
 for (var p=0; p<poligonos.features.length; p++) {
   var geometry = poligonos.features[p].geometry.coordinates;
   calcCenters(geometry, poligonos.features[p]); 
+}
+*/
+for (var bar in show_objects) {
+  for (var q=0; q<show_objects[bar].length; q++) {
+    var geometry = show_objects[bar][q].geometry.coordinates;
+    calcCenters(geometry, show_objects[bar][q] ); 
+  }
 }
 
 function calcCenters(geometry, feature) {
@@ -78,6 +93,7 @@ function calcCenters(geometry, feature) {
 var idx = 0;
 var data_overlay = document.getElementById('data_overlay');
 var newLayer = null; 
+var current_timeout = null;
 function getNextCenter(center) {
   //console.log(idx);
   if (newLayer) {
@@ -98,9 +114,11 @@ function getNextCenter(center) {
   data_overlay.innerHTML = html;
   idx++;
   if (idx < centers.length) {
-    setTimeout(function() { getNextCenter(centers[idx])}, 4000);
+    current_timeout = setTimeout(function() { getNextCenter(centers[idx])}, 4000);
   } else {
-    clearTimeout();
+    if (current_timeout) {
+      clearTimeout(current_timeout);
+    }
     if (newLayer) {
       map.removeLayer(newLayer);
     }
@@ -108,4 +126,61 @@ function getNextCenter(center) {
   }
 }
 
-setTimeout(function() {getNextCenter(centers[idx])}, 4000);
+function startAnimation() {
+  getNextCenter(centers[idx]);
+}
+
+
+
+function sortData(all_data) {
+  for (var p=0; p<all_data.features.length; p++) {
+    var barrio = all_data.features[p].properties['ProcesadoDatosMapeo_BARRIO\/SECTOR'];
+    if (! by_barrio.hasOwnProperty(barrio)) {
+      by_barrio[barrio] = [];
+      barrios.push(barrio);
+    }
+    by_barrio[barrio].push(all_data.features[p]);
+    all_data.features[p].properties["show_on_map"] = true;
+    //console.log(barrio);
+  }
+
+}
+
+function filterData() {
+  if (all_layer) {
+    map.removeLayer(all_layer);
+    all_layer = null;
+  }
+  if (filtered_layer) {
+    map.removeLayer(filtered_layer);
+  }
+  filtered_layer = L.geoJson(all_data, {
+    filter: function(feature, layer) {
+        return feature.properties.show_on_map;
+    }
+  }).addTo(map);
+}
+
+function sortByBarrio(barrio) {
+  for (var y=0; y<all_data.features.length; y++) {
+    if (all_data.features[y].properties['ProcesadoDatosMapeo_BARRIO\/SECTOR'] == barrio) {
+      all_data.features[y].properties['show_on_map'] = true;
+    } else {
+      all_data.features[y].properties['show_on_map'] = false;
+    }
+  }
+  /*
+  for (var b in by_barrio) {
+    if (b != barrio) {
+     for(var k=0;k<by_barrio[b].length; k++) {
+      by_barrio[b][k].properties['show_on_map'] = false;
+     }
+    } else {
+     for(var y=0;k<by_barrio[b].length; y++) {
+      by_barrio[b][y].properties['show_on_map'] = true;
+     }
+    }
+  }
+  */
+  filterData();
+}
