@@ -8,7 +8,7 @@ html
   div#map
   div#controls(ng-controller="ControlsCtrl")
     div.filter_wrapper
-     select(ng-model="barrio_filter" ng-options="b for b in lista_barrios" ng-change="filter_by_barrio()") 
+     select(ng-model="barrio_filter" ng-options="b for b in lista_barrios" ng-change="filter_by_barrio()")
     div.control_wrapper
       img.control(ng-click="rewind_animation()" src="/img/rewind.png")
       img#play.control(ng-click="toggle_play()" src="/img/play.png")
