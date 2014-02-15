@@ -8,7 +8,10 @@ html
   div#map
   div#controls(ng-controller="ControlsCtrl")
     div.filter_wrapper
-     select(ng-model="barrio_filter" ng-options="b for b in lista_barrios" ng-change="filter_by_barrio()") 
+     select.filter(ng-model="barrio_filter" ng-options="b for b in lista_barrios" ng-change="filter_by_barrio()") 
+     select.filter(ng-model="categoria_filter" ng-options="c for c in lista_categorias" ng-change="filter_by_categoria()") 
+     select.filter(ng-model="subcategoria_filter" ng-options="s for s in lista_subcategorias" ng-change="filter_by_subcategoria()") 
+     select.filter(ng-model="etiqueta_filter" ng-options="e for e in lista_etiquetas" ng-change="filter_by_etiqueta()") 
     div.control_wrapper
       img.control(ng-click="rewind_animation()" src="/img/rewind.png")
       img#play.control(ng-click="toggle_play()" src="/img/play.png")
@@ -18,6 +21,7 @@ html
   //-script(src="data/lineas.js")
   script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js")
   script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.js")
+  script(src="js/crossfilter.js")
   script(src="data/all_mapeo_social.js")
   script(src="js/mapeo_social.js")
-  script(src="js/rutan.js")
+  script(src="js/rutan_crossfilter.js")

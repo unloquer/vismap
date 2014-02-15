@@ -11,7 +11,10 @@ var app = angular.module('mapeo_social', [
 app.controller("ControlsCtrl", function ControlsCtrl($scope, $http, $timeout) {
 
   $scope.playing = false;
-  $scope.lista_barrios = barrios;
+  $scope.lista_barrios        = barrios;
+  $scope.lista_subcategorias  = subcategorias ;
+  $scope.lista_categorias     = categorias;
+  $scope.lista_etiquetas      = etiquetas ;
 
   $scope.start_animation = function() {
     startAnimation();
@@ -49,8 +52,19 @@ app.controller("ControlsCtrl", function ControlsCtrl($scope, $http, $timeout) {
   }
   
   $scope.filter_by_barrio = function() {
-    console.log($scope.barrio_filter);
     sortByBarrio($scope.barrio_filter);
+  }
+  
+  $scope.filter_by_etiqueta = function() {
+    sortByEtiqueta($scope.etiqueta_filter);
+  }
+  
+  $scope.filter_by_categoria = function() {
+    sortByCategoria($scope.categoria_filter);
+  }
+  
+  $scope.filter_by_subcategoria = function() {
+    sortBySubcategoria($scope.subcategoria_filter);
   }
 });
 
