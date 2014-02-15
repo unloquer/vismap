@@ -18,6 +18,9 @@ var categorias = [];
 var subcategorias = [];
 var etiquetas = [];
 
+var centers = [];
+var poligons= [];
+
 var all_layer = L.geoJson(all_data).addTo(map); 
 var unfiltered = crossfilter().add(all_data.features);
 sortData(all_data);
@@ -27,17 +30,17 @@ var f_categoria = unfiltered.dimension(function(d) { return d.properties['CATEGO
 var f_etiqueta  = unfiltered.dimension(function(d) { return d.properties['ETIQUETA']} ); 
 var f_subcategoria = unfiltered.dimension(function(d) { return d.properties['SUBCATEGORIA']} ); 
 
-var show_objects = all_data;
+var show_objects = all_data.features;
 
 get_animation_objects();
 
 function get_animation_objects() {
+  centers = [];
+  poligons = [];
   for (var bar in show_objects) {
-    for (var q=0; q<[bar].length; q++) {
-      var geometry = show_objects[bar][q].geometry.coordinates;
-      calcCenters(geometry, show_objects[bar][q] ); 
+      var geometry = show_objects[bar].geometry.coordinates;
+      calcCenters(geometry, show_objects[bar] ); 
     }
-  }
 }
 
 function calcCenters(geometry, feature) {
@@ -100,9 +103,9 @@ function getNextCenter(center) {
   newLayer = L.geoJson(poligons[idx], {
     style: { "color": "red", "opacity": 0.65} 
   }).addTo(map);
-  //data_overlay.innerHTML = poligons[idx].ProcesadoDatosMapeo_BARRIO\/SECTOR;// + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_SUB CATEGORIA DE ANALISIS + '<br><br>' + poligons[idx].ProcesadoDatosMapeo_DESCRIPCIÓN + '<br><br>' +poligons[idx].ProcesadoDatosMapeo_ETIQUETA
+  
   html = '<div class="data_frame"><p class="barrio">' + poligons[idx].properties['BARRIO'] + "</p>";
-  html = html + '<label>Categoria de Analsis:</label><p class="data_text">' + poligons[idx].properties['CATEGORIA'] + "</p>";
+  html = html + '<label>Categoria de Analisis:</label><p class="data_text">' + poligons[idx].properties['CATEGORIA'] + "</p>";
   html = html + '<label>Subcategoria de analisis</label><p class="data_text">' + poligons[idx].properties['SUBCATEGORIA'] + "</p>";
   html = html + '<label>Descripción</label><p class="data_text">' + poligons[idx].properties['DESCRIPCION'] + "</p>";
   html = html + '<label>Etiqueta</label><p class="data_text">' + poligons[idx].properties['ETIQUETA'] + "</p>";
@@ -158,26 +161,45 @@ function filterData() {
   map.removeLayer(all_layer);
   all_layer = null;
   all_layer = L.geoJson(visible).addTo(map);
+  show_objects = visible;
+  if (newLayer) {
+    map.removeLayer(newLayer);
+  }
   get_animation_objects();
 }
 
 function sortByBarrio(barrio) {
-  visible = f_barrio.filter(barrio).top(Infinity);
-  console.log(visible);
+  if (barrio == "TODOS") {
+    visible = f_barrio.filterAll().top(Infinity);
+  } else {
+    visible = f_barrio.filter(barrio).top(Infinity);
+  }
   filterData();
 }
 
 function sortByCategoria(cat) {
-  visible = f_categoria.filter(cat).top(Infinity);
+  if (cat == "TODOS") {
+    visible = f_categoria.filterAll().top(Infinity);
+  } else {
+    visible = f_categoria.filter(cat).top(Infinity);
+  }
   filterData();
 }
 
-function sortBySubategoria(cat) {
-  visible = f_subcategoria.filter(cat).top(Infinity);
+function sortBySubcategoria(cat) {
+  if (cat == "TODOS") {
+    visible = f_subcategoria.filterAll().top(Infinity);
+  } else {
+    visible = f_subcategoria.filter(cat).top(Infinity);
+  }
   filterData();
 }
 
 function sortByEtiqueta(et) {
-  visible = f_etiqueta.filter(et).top(Infinity);
+  if (cat == "TODOS") {
+    visible = f_etiqueta.filterAll().top(Infinity);
+  } else {
+    visible = f_etiqueta.filter(et).top(Infinity);
+  }
   filterData();
 }

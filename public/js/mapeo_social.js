@@ -12,9 +12,13 @@ app.controller("ControlsCtrl", function ControlsCtrl($scope, $http, $timeout) {
 
   $scope.playing = false;
   $scope.lista_barrios        = barrios;
+  $scope.lista_barrios.unshift("TODOS");
   $scope.lista_subcategorias  = subcategorias ;
+  $scope.lista_subcategorias.unshift("TODOS");
   $scope.lista_categorias     = categorias;
+  $scope.lista_categorias.unshift("TODOS");
   $scope.lista_etiquetas      = etiquetas ;
+  $scope.lista_etiquetas.unshift("TODOS");
 
   $scope.start_animation = function() {
     startAnimation();
